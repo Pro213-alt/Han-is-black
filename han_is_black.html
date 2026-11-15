@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="th" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Han is black</title>
+    <!-- โหลด Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- โหลดฟอนต์ Inter และ Kanit เพื่อความสวยงามทั้งภาษาอังกฤษและภาษาไทย -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Kanit:wght@400;500&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'Kanit', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50 transition-colors duration-500 min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+
+    <!-- ส่วนหัวด้านบน: ปุ่มสลับธีมและปุ่มคัดลอก -->
+    <header class="w-full p-6 flex justify-between items-center max-w-5xl mx-auto">
+        <div class="flex items-center space-x-2">
+            <span class="w-3 h-3 rounded-full bg-zinc-900 dark:bg-zinc-100 animate-pulse"></span>
+            <span class="text-xs font-semibold tracking-widest uppercase opacity-60">Statement</span>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <!-- ปุ่มคัดลอกข้อความ -->
+            <button id="copyBtn" onclick="copyText()" class="p-3 rounded-2xl bg-zinc-200/70 dark:bg-zinc-900/80 hover:bg-zinc-300 dark:hover:bg-zinc-800 transition-all duration-200 border border-zinc-300/50 dark:border-zinc-800 flex items-center gap-2 text-sm font-medium active:scale-95" title="คัดลอกข้อความ">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                <span class="hidden sm:inline">Copy</span>
+            </button>
+
+            <!-- ปุ่มเปลี่ยนธีม Dark / Light -->
+            <button id="themeToggle" onclick="toggleTheme()" class="p-3 rounded-2xl bg-zinc-200/70 dark:bg-zinc-900/80 hover:bg-zinc-300 dark:hover:bg-zinc-800 transition-all duration-200 border border-zinc-300/50 dark:border-zinc-800 flex items-center gap-2 text-sm font-medium active:scale-95" aria-label="Toggle Theme">
+                <!-- ไอคอนพระอาทิตย์ (แสดงตอนอยู่โหมดมืด) -->
+                <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+                <!-- ไอคอนพระจันทร์ (แสดงตอนอยู่โหมดสว่าง) -->
+                <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+                <span id="themeLabel" class="hidden sm:inline">Light Mode</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- ส่วนกลาง: ข้อความหลักและปุ่มเปลี่ยนเอฟเฟกต์ -->
+    <main class="flex-grow flex flex-col items-center justify-center px-6 text-center relative overflow-hidden">
+        
+        <!-- แสงฟุ้งด้านหลัง (Ambient Glow) -->
+        <div id="ambientGlow" class="absolute w-72 h-72 sm:w-96 sm:h-96 bg-zinc-400/20 dark:bg-zinc-700/20 rounded-full blur-3xl pointer-events-none transition-all duration-700"></div>
+
+        <!-- กล่องข้อความหลัก -->
+        <div class="relative z-10 max-w-4xl mx-auto my-8">
+            <h1 id="mainText" class="text-6xl sm:text-8xl md:text-9xl font-black tracking-tighter transition-all duration-500 select-none cursor-pointer" onclick="cycleEffect()">
+                Han is black
+            </h1>
+            <p id="effectBadge" class="mt-6 inline-block px-4 py-1.5 rounded-full text-xs font-medium tracking-wider uppercase bg-zinc-200/80 dark:bg-zinc-900/90 text-zinc-600 dark:text-zinc-400 border border-zinc-300/50 dark:border-zinc-800 transition-all duration-300">
+                Style: Classic Bold
+            </p>
+        </div>
+
+        <!-- แถบปุ่มควบคุมเอฟเฟกต์ -->
+        <div class="relative z-10 mt-6 flex flex-wrap items-center justify-center gap-3">
+            <button onclick="cycleEffect()" class="px-6 py-3.5 rounded-2xl bg-zinc-900 text-white dark:bg-white dark:text-zinc-950 font-semibold text-sm sm:text-base shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                </svg>
+                <span>เปลี่ยนเอฟเฟกต์ข้อความ</span>
+            </button>
+        </div>
+
+    </main>
+
+    <!-- กล่องแจ้งเตือนแบบ Toast (แทนการใช้ alert) -->
+    <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 px-5 py-3 rounded-2xl bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 text-sm font-medium shadow-2xl opacity-0 pointer-events-none transition-all duration-300 transform translate-y-4 z-50 flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-400 dark:text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
+        <span id="toastMessage">คัดลอก "Han is black" เรียบร้อยแล้ว!</span>
+    </div>
+
+    <!-- ส่วนท้าย -->
+    <footer class="w-full p-6 text-center text-xs text-zinc-400 dark:text-zinc-600">
+        คลิกที่ข้อความหรือกดปุ่มเพื่อสลับสไตล์การแสดงผล
+    </footer>
+
+    <!-- Input ลับสำหรับคัดลอกข้อความ -->
+    <input type="text" id="hiddenCopyInput" value="Han is black" class="sr-only" aria-hidden="true">
+
+    <script>
+        // รายการเอฟเฟกต์ทั้งหมดสำหรับข้อความหลัก
+        const effects = [
+            {
+                name: 'Classic Bold',
+                classes: 'text-6xl sm:text-8xl md:text-9xl font-black tracking-tighter transition-all duration-500 select-none cursor-pointer',
+                glow: 'bg-zinc-400/20 dark:bg-zinc-700/20'
+            },
+            {
+                name: 'Neon Glow',
+                classes: 'text-6xl sm:text-8xl md:text-9xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-amber-500 drop-shadow-[0_0_25px_rgba(236,72,153,0.45)] transition-all duration-500 select-none cursor-pointer',
+                glow: 'bg-pink-500/25 dark:bg-purple-600/30'
+            },
+            {
+                name: 'Glitch & Skew',
+                classes: 'text-6xl sm:text-8xl md:text-9xl font-black italic tracking-widest uppercase -skew-x-12 drop-shadow-[4px_4px_0px_rgba(239,68,68,0.8)] dark:drop-shadow-[4px_4px_0px_rgba(56,189,248,0.8)] transition-all duration-500 select-none cursor-pointer',
+                glow: 'bg-sky-400/20 dark:bg-sky-500/25'
+            },
+            {
+                name: 'Floating Pulse',
+                classes: 'text-6xl sm:text-8xl md:text-9xl font-extrabold tracking-normal animate-pulse scale-105 transition-all duration-500 select-none cursor-pointer',
+                glow: 'bg-emerald-400/20 dark:bg-emerald-500/20'
+            },
+            {
+                name: 'Cyber Emerald',
+                classes: 'text-6xl sm:text-8xl md:text-9xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-emerald-400 to-teal-700 dark:from-emerald-300 dark:to-cyan-600 transition-all duration-500 select-none cursor-pointer',
+                glow: 'bg-emerald-500/25 dark:bg-teal-500/25'
+            }
+        ];
+
+        let currentEffectIndex = 0;
+
+        // ฟังก์ชันสลับเอฟเฟกต์ข้อความ
+        function cycleEffect() {
+            try {
+                currentEffectIndex = (currentEffectIndex + 1) % effects.length;
+                const current = effects[currentEffectIndex];
+                
+                const mainText = document.getElementById('mainText');
+                const effectBadge = document.getElementById('effectBadge');
+                const ambientGlow = document.getElementById('ambientGlow');
+
+                mainText.className = current.classes;
+                effectBadge.textContent = `Style: ${current.name}`;
+                ambientGlow.className = `absolute w-72 h-72 sm:w-96 sm:h-96 rounded-full blur-3xl pointer-events-none transition-all duration-700 ${current.glow}`;
+            } catch (error) {
+                console.error('Error cycling text effect:', error);
+            }
+        }
+
+        // ฟังก์ชันสลับ Dark Mode / Light Mode
+        function toggleTheme() {
+            try {
+                const htmlEl = document.documentElement;
+                const sunIcon = document.getElementById('sunIcon');
+                const moonIcon = document.getElementById('moonIcon');
+                const themeLabel = document.getElementById('themeLabel');
+
+                if (htmlEl.classList.contains('dark')) {
+                    htmlEl.classList.remove('dark');
+                    sunIcon.classList.add('hidden');
+                    moonIcon.classList.remove('hidden');
+                    themeLabel.textContent = 'Dark Mode';
+                } else {
+                    htmlEl.classList.add('dark');
+                    moonIcon.classList.add('hidden');
+                    sunIcon.classList.remove('hidden');
+                    themeLabel.textContent = 'Light Mode';
+                }
+            } catch (error) {
+                console.error('Error toggling theme:', error);
+            }
+        }
+
+        // ฟังก์ชันคัดลอกข้อความไปยัง Clipboard และแสดงแจ้งเตือน
+        function copyText() {
+            try {
+                const copyInput = document.getElementById('hiddenCopyInput');
+                copyInput.select();
+                copyInput.setSelectionRange(0, 99999);
+                document.execCommand('copy');
+                showToast('คัดลอก "Han is black" เรียบร้อยแล้ว!');
+            } catch (error) {
+                console.error('Copy failed:', error);
+                showToast('ไม่สามารถคัดลอกข้อความได้');
+            }
+        }
+
+        // ฟังก์ชันแสดงกล่องแจ้งเตือน (Toast)
+        let toastTimeout;
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toastMessage.textContent = message;
+            toast.classList.remove('opacity-0', 'translate-y-4');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'translate-y-4');
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
