@@ -1,208 +1,258 @@
 <!DOCTYPE html>
-<html lang="th" class="dark">
+<html lang="en" class="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Han is black</title>
-    <!-- โหลด Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- โหลดฟอนต์ Inter และ Kanit เพื่อความสวยงามทั้งภาษาอังกฤษและภาษาไทย -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Kanit:wght@400;500&display=swap" rel="stylesheet">
-    
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'Kanit', 'sans-serif'],
-                    }
-                }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Han is black</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          animation: {
+            'float': 'float 3s ease-in-out infinite',
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-10px)' },
             }
+          }
         }
-    </script>
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* Custom Text Effects */
+    .effect-classic {
+      letter-spacing: -0.04em;
+    }
+
+    .effect-neon {
+      color: #ffffff;
+      text-shadow:
+        0 0 10px rgba(255, 255, 255, 0.8),
+        0 0 25px rgba(59, 130, 246, 0.8),
+        0 0 50px rgba(59, 130, 246, 0.6);
+    }
+    html:not(.dark) .effect-neon {
+      color: #1e3a8a;
+      text-shadow:
+        0 0 10px rgba(59, 130, 246, 0.4),
+        0 0 25px rgba(59, 130, 246, 0.3);
+    }
+
+    .effect-glitch {
+      position: relative;
+      transform: skewX(-8deg);
+      text-shadow: 4px 0 #ef4444, -4px 0 #06b6d4;
+      letter-spacing: 0.02em;
+    }
+
+    .effect-floating {
+      animation: float 3s ease-in-out infinite;
+      background: linear-gradient(135deg, #a1a1aa 0%, #ffffff 50%, #71717a 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    html:not(.dark) .effect-floating {
+      background: linear-gradient(135deg, #18181b 0%, #52525b 50%, #09090b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .effect-cyber {
+      background: linear-gradient(to right, #10b981, #34d399, #059669);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 30px rgba(16, 185, 129, 0.25);
+    }
+  </style>
 </head>
-<body class="bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50 transition-colors duration-500 min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+<body class="bg-[#09090b] text-zinc-100 dark:bg-[#09090b] dark:text-zinc-100 min-h-screen flex flex-col justify-between select-none overflow-hidden relative">
 
-    <!-- ส่วนหัวด้านบน: ปุ่มสลับธีมและปุ่มคัดลอก -->
-    <header class="w-full p-6 flex justify-between items-center max-w-5xl mx-auto">
-        <div class="flex items-center space-x-2">
-            <span class="w-3 h-3 rounded-full bg-zinc-900 dark:bg-zinc-100 animate-pulse"></span>
-            <span class="text-xs font-semibold tracking-widest uppercase opacity-60">Statement</span>
-        </div>
+  <!-- Ambient Background Glow -->
+  <div id="ambient-glow" class="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[320px] sm:w-[480px] sm:h-[480px] rounded-full bg-emerald-500/10 blur-[110px] transition-all duration-500"></div>
 
-        <div class="flex items-center gap-3">
-            <!-- ปุ่มคัดลอกข้อความ -->
-            <button id="copyBtn" onclick="copyText()" class="p-3 rounded-2xl bg-zinc-200/70 dark:bg-zinc-900/80 hover:bg-zinc-300 dark:hover:bg-zinc-800 transition-all duration-200 border border-zinc-300/50 dark:border-zinc-800 flex items-center gap-2 text-sm font-medium active:scale-95" title="คัดลอกข้อความ">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                </svg>
-                <span class="hidden sm:inline">Copy</span>
-            </button>
-
-            <!-- ปุ่มเปลี่ยนธีม Dark / Light -->
-            <button id="themeToggle" onclick="toggleTheme()" class="p-3 rounded-2xl bg-zinc-200/70 dark:bg-zinc-900/80 hover:bg-zinc-300 dark:hover:bg-zinc-800 transition-all duration-200 border border-zinc-300/50 dark:border-zinc-800 flex items-center gap-2 text-sm font-medium active:scale-95" aria-label="Toggle Theme">
-                <!-- ไอคอนพระอาทิตย์ (แสดงตอนอยู่โหมดมืด) -->
-                <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
-                <!-- ไอคอนพระจันทร์ (แสดงตอนอยู่โหมดสว่าง) -->
-                <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                </svg>
-                <span id="themeLabel" class="hidden sm:inline">Light Mode</span>
-            </button>
-        </div>
-    </header>
-
-    <!-- ส่วนกลาง: ข้อความหลักและปุ่มเปลี่ยนเอฟเฟกต์ -->
-    <main class="flex-grow flex flex-col items-center justify-center px-6 text-center relative overflow-hidden">
-        
-        <!-- แสงฟุ้งด้านหลัง (Ambient Glow) -->
-        <div id="ambientGlow" class="absolute w-72 h-72 sm:w-96 sm:h-96 bg-zinc-400/20 dark:bg-zinc-700/20 rounded-full blur-3xl pointer-events-none transition-all duration-700"></div>
-
-        <!-- กล่องข้อความหลัก -->
-        <div class="relative z-10 max-w-4xl mx-auto my-8">
-            <h1 id="mainText" class="text-6xl sm:text-8xl md:text-9xl font-black tracking-tighter transition-all duration-500 select-none cursor-pointer" onclick="cycleEffect()">
-                Han is black
-            </h1>
-            <p id="effectBadge" class="mt-6 inline-block px-4 py-1.5 rounded-full text-xs font-medium tracking-wider uppercase bg-zinc-200/80 dark:bg-zinc-900/90 text-zinc-600 dark:text-zinc-400 border border-zinc-300/50 dark:border-zinc-800 transition-all duration-300">
-                Style: Classic Bold
-            </p>
-        </div>
-
-        <!-- แถบปุ่มควบคุมเอฟเฟกต์ -->
-        <div class="relative z-10 mt-6 flex flex-wrap items-center justify-center gap-3">
-            <button onclick="cycleEffect()" class="px-6 py-3.5 rounded-2xl bg-zinc-900 text-white dark:bg-white dark:text-zinc-950 font-semibold text-sm sm:text-base shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                </svg>
-                <span>เปลี่ยนเอฟเฟกต์ข้อความ</span>
-            </button>
-        </div>
-
-    </main>
-
-    <!-- กล่องแจ้งเตือนแบบ Toast (แทนการใช้ alert) -->
-    <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 px-5 py-3 rounded-2xl bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 text-sm font-medium shadow-2xl opacity-0 pointer-events-none transition-all duration-300 transform translate-y-4 z-50 flex items-center gap-2">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-400 dark:text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-        </svg>
-        <span id="toastMessage">คัดลอก "Han is black" เรียบร้อยแล้ว!</span>
+  <!-- Top Navigation Bar -->
+  <header class="w-full max-w-6xl mx-auto px-6 py-6 flex items-center justify-between z-10">
+    <div class="flex items-center gap-2.5">
+      <span id="status-dot" class="w-2.5 h-2.5 rounded-full bg-zinc-500 transition-colors duration-300"></span>
+      <span class="text-xs font-semibold tracking-[0.2em] uppercase text-zinc-500 dark:text-zinc-400">STATEMENT</span>
     </div>
 
-    <!-- ส่วนท้าย -->
-    <footer class="w-full p-6 text-center text-xs text-zinc-400 dark:text-zinc-600">
-        คลิกที่ข้อความหรือกดปุ่มเพื่อสลับสไตล์การแสดงผล
-    </footer>
+    <div class="flex items-center gap-3">
+      <!-- Copy Button -->
+      <button id="copy-btn" onclick="copyText()" class="flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-medium border border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-200 backdrop-blur-sm transition-all active:scale-95 cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+        </svg>
+        <span>Copy</span>
+      </button>
 
-    <!-- Input ลับสำหรับคัดลอกข้อความ -->
-    <input type="text" id="hiddenCopyInput" value="Han is black" class="sr-only" aria-hidden="true">
+      <!-- Theme Toggle Button -->
+      <button id="theme-btn" onclick="toggleTheme()" class="flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-medium border border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-200 backdrop-blur-sm transition-all active:scale-95 cursor-pointer">
+        <svg id="theme-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-400">
+          <circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>
+        </svg>
+        <span id="theme-label">Light Mode</span>
+      </button>
+    </div>
+  </header>
 
-    <script>
-        // รายการเอฟเฟกต์ทั้งหมดสำหรับข้อความหลัก
-        const effects = [
-            {
-                name: 'Classic Bold',
-                classes: 'text-6xl sm:text-8xl md:text-9xl font-black tracking-tighter transition-all duration-500 select-none cursor-pointer',
-                glow: 'bg-zinc-400/20 dark:bg-zinc-700/20'
-            },
-            {
-                name: 'Neon Glow',
-                classes: 'text-6xl sm:text-8xl md:text-9xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-amber-500 drop-shadow-[0_0_25px_rgba(236,72,153,0.45)] transition-all duration-500 select-none cursor-pointer',
-                glow: 'bg-pink-500/25 dark:bg-purple-600/30'
-            },
-            {
-                name: 'Glitch & Skew',
-                classes: 'text-6xl sm:text-8xl md:text-9xl font-black italic tracking-widest uppercase -skew-x-12 drop-shadow-[4px_4px_0px_rgba(239,68,68,0.8)] dark:drop-shadow-[4px_4px_0px_rgba(56,189,248,0.8)] transition-all duration-500 select-none cursor-pointer',
-                glow: 'bg-sky-400/20 dark:bg-sky-500/25'
-            },
-            {
-                name: 'Floating Pulse',
-                classes: 'text-6xl sm:text-8xl md:text-9xl font-extrabold tracking-normal animate-pulse scale-105 transition-all duration-500 select-none cursor-pointer',
-                glow: 'bg-emerald-400/20 dark:bg-emerald-500/20'
-            },
-            {
-                name: 'Cyber Emerald',
-                classes: 'text-6xl sm:text-8xl md:text-9xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-emerald-400 to-teal-700 dark:from-emerald-300 dark:to-cyan-600 transition-all duration-500 select-none cursor-pointer',
-                glow: 'bg-emerald-500/25 dark:bg-teal-500/25'
-            }
-        ];
+  <!-- Center Hero Section -->
+  <main class="flex-1 flex flex-col items-center justify-center px-6 text-center z-10">
+    <!-- Main Statement -->
+    <h1 id="main-text" onclick="cycleEffect()" title="Click to change style" class="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tight cursor-pointer transition-all duration-300 effect-classic py-2">
+      Han is black
+    </h1>
 
-        let currentEffectIndex = 0;
+    <!-- Style Indicator Badge -->
+    <div class="mt-6 mb-7">
+      <span id="style-badge" class="inline-block px-4 py-1.5 rounded-full text-[11px] font-semibold tracking-widest uppercase border border-zinc-200 dark:border-zinc-800/90 bg-zinc-100/80 dark:bg-zinc-900/90 text-zinc-600 dark:text-zinc-400">
+        STYLE: CLASSIC BOLD
+      </span>
+    </div>
 
-        // ฟังก์ชันสลับเอฟเฟกต์ข้อความ
-        function cycleEffect() {
-            try {
-                currentEffectIndex = (currentEffectIndex + 1) % effects.length;
-                const current = effects[currentEffectIndex];
-                
-                const mainText = document.getElementById('mainText');
-                const effectBadge = document.getElementById('effectBadge');
-                const ambientGlow = document.getElementById('ambientGlow');
+    <!-- Cycle Effect CTA Button -->
+    <button onclick="cycleEffect()" class="group flex items-center gap-2.5 px-6 py-3.5 rounded-2xl text-sm sm:text-base font-semibold bg-zinc-900 text-white dark:bg-white dark:text-zinc-950 hover:opacity-90 shadow-lg shadow-black/10 dark:shadow-white/5 transition-all active:scale-95 cursor-pointer">
+      <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-300 group-hover:rotate-12">
+        <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+        <path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/>
+      </svg>
+      <span>Change Text Effect</span>
+    </button>
+  </main>
 
-                mainText.className = current.classes;
-                effectBadge.textContent = `Style: ${current.name}`;
-                ambientGlow.className = `absolute w-72 h-72 sm:w-96 sm:h-96 rounded-full blur-3xl pointer-events-none transition-all duration-700 ${current.glow}`;
-            } catch (error) {
-                console.error('Error cycling text effect:', error);
-            }
-        }
+  <!-- Bottom Instruction -->
+  <footer class="w-full py-5 text-center z-10 px-4">
+    <p class="text-xs text-zinc-500 dark:text-zinc-500">
+      Click the text or button to switch display styles
+    </p>
+  </footer>
 
-        // ฟังก์ชันสลับ Dark Mode / Light Mode
-        function toggleTheme() {
-            try {
-                const htmlEl = document.documentElement;
-                const sunIcon = document.getElementById('sunIcon');
-                const moonIcon = document.getElementById('moonIcon');
-                const themeLabel = document.getElementById('themeLabel');
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-12 left-1/2 -translate-x-1/2 translate-y-10 opacity-0 pointer-events-none flex items-center gap-2 px-4 py-2.5 rounded-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-xs sm:text-sm font-medium shadow-xl transition-all duration-300 z-50">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-400 dark:text-emerald-600">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+    <span>Copied "Han is black" to clipboard</span>
+  </div>
 
-                if (htmlEl.classList.contains('dark')) {
-                    htmlEl.classList.remove('dark');
-                    sunIcon.classList.add('hidden');
-                    moonIcon.classList.remove('hidden');
-                    themeLabel.textContent = 'Dark Mode';
-                } else {
-                    htmlEl.classList.add('dark');
-                    moonIcon.classList.add('hidden');
-                    sunIcon.classList.remove('hidden');
-                    themeLabel.textContent = 'Light Mode';
-                }
-            } catch (error) {
-                console.error('Error toggling theme:', error);
-            }
-        }
+  <script>
+    const styles = [
+      {
+        name: 'STYLE: CLASSIC BOLD',
+        className: 'effect-classic',
+        glow: 'bg-zinc-500/10'
+      },
+      {
+        name: 'STYLE: NEON GLOW',
+        className: 'effect-neon',
+        glow: 'bg-blue-500/15'
+      },
+      {
+        name: 'STYLE: GLITCH & SKEW',
+        className: 'effect-glitch',
+        glow: 'bg-rose-500/15'
+      },
+      {
+        name: 'STYLE: FLOATING PULSE',
+        className: 'effect-floating',
+        glow: 'bg-emerald-500/15'
+      },
+      {
+        name: 'STYLE: CYBER EMERALD',
+        className: 'effect-cyber',
+        glow: 'bg-emerald-400/20'
+      }
+    ];
 
-        // ฟังก์ชันคัดลอกข้อความไปยัง Clipboard และแสดงแจ้งเตือน
-        function copyText() {
-            try {
-                const copyInput = document.getElementById('hiddenCopyInput');
-                copyInput.select();
-                copyInput.setSelectionRange(0, 99999);
-                document.execCommand('copy');
-                showToast('คัดลอก "Han is black" เรียบร้อยแล้ว!');
-            } catch (error) {
-                console.error('Copy failed:', error);
-                showToast('ไม่สามารถคัดลอกข้อความได้');
-            }
-        }
+    let currentStyleIndex = 0;
 
-        // ฟังก์ชันแสดงกล่องแจ้งเตือน (Toast)
-        let toastTimeout;
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            const toastMessage = document.getElementById('toastMessage');
-            
-            toastMessage.textContent = message;
-            toast.classList.remove('opacity-0', 'translate-y-4');
-            toast.classList.add('opacity-100', 'translate-y-0');
+    function cycleEffect() {
+      const mainText = document.getElementById('main-text');
+      const styleBadge = document.getElementById('style-badge');
+      const ambientGlow = document.getElementById('ambient-glow');
 
-            clearTimeout(toastTimeout);
-            toastTimeout = setTimeout(() => {
-                toast.classList.remove('opacity-100', 'translate-y-0');
-                toast.classList.add('opacity-0', 'translate-y-4');
-            }, 2500);
-        }
-    </script>
+      // Remove old effect classes
+      styles.forEach(s => {
+        mainText.classList.remove(s.className);
+        ambientGlow.classList.remove(s.glow);
+      });
+
+      // Advance index
+      currentStyleIndex = (currentStyleIndex + 1) % styles.length;
+      const nextStyle = styles[currentStyleIndex];
+
+      // Apply new effect
+      mainText.classList.add(nextStyle.className);
+      ambientGlow.classList.add(nextStyle.glow);
+      styleBadge.textContent = nextStyle.name;
+    }
+
+    function toggleTheme() {
+      const html = document.documentElement;
+      const body = document.body;
+      const themeLabel = document.getElementById('theme-label');
+      const themeIcon = document.getElementById('theme-icon');
+
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        body.classList.remove('bg-[#09090b]', 'text-zinc-100');
+        body.classList.add('bg-zinc-50', 'text-zinc-900');
+        themeLabel.textContent = 'Dark Mode';
+        themeIcon.classList.remove('text-amber-400');
+        themeIcon.classList.add('text-zinc-700');
+        themeIcon.innerHTML = '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>';
+      } else {
+        html.classList.add('dark');
+        body.classList.remove('bg-zinc-50', 'text-zinc-900');
+        body.classList.add('bg-[#09090b]', 'text-zinc-100');
+        themeLabel.textContent = 'Light Mode';
+        themeIcon.classList.remove('text-zinc-700');
+        themeIcon.classList.add('text-amber-400');
+        themeIcon.innerHTML = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>';
+      }
+    }
+
+    let toastTimeout;
+    function copyText() {
+      const textToCopy = 'Han is black';
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(textToCopy);
+      } else {
+        const textArea = document.createElement('textarea');
+        textArea.value = textToCopy;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      }
+
+      const toast = document.getElementById('toast');
+      toast.classList.remove('translate-y-10', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-10', 'opacity-0');
+      }, 2200);
+    }
+  </script>
 </body>
 </html>
