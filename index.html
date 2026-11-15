@@ -113,7 +113,7 @@
     }
   </style>
 </head>
-<body class="bg-[#09090b] text-zinc-100 dark:bg-[#09090b] dark:text-zinc-100 min-h-screen flex flex-col justify-between select-none overflow-hidden relative">
+<body class="bg-[#09090b] text-zinc-100 dark:bg-[#09090b] dark:text-zinc-100 min-h-screen flex flex-col justify-between select-none overflow-x-hidden relative">
 
   <!-- Ambient Background Glow -->
   <div id="ambient-glow" class="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[320px] sm:w-[480px] sm:h-[480px] rounded-full bg-zinc-500/10 blur-[110px] transition-all duration-500"></div>
@@ -185,39 +185,61 @@
   </main>
 
   <!-- VIEW 2: QUIZ SECTION -->
-  <section id="quiz-view" class="hidden flex-1 flex-col items-center justify-center px-6 text-center z-10">
-    <div id="quiz-card" class="w-full max-w-lg p-8 sm:p-10 rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl shadow-2xl transition-all duration-300">
+  <section id="quiz-view" class="hidden flex-1 flex-col items-center justify-center px-6 py-4 text-center z-10">
+    <div id="quiz-card" class="w-full max-w-lg p-7 sm:p-10 rounded-3xl border border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl shadow-2xl transition-all duration-300">
       
-      <!-- Quiz Tag -->
-      <span class="inline-block px-3.5 py-1 rounded-full text-[11px] font-bold tracking-widest uppercase bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 mb-5">
-        QUESTION 1 OF 1
-      </span>
+      <!-- Active Question Container -->
+      <div id="quiz-active-content">
+        <!-- Quiz Progress Tag -->
+        <div class="flex items-center justify-center gap-2 mb-5">
+          <span id="quiz-progress" class="inline-block px-3.5 py-1 rounded-full text-[11px] font-bold tracking-widest uppercase bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
+            QUESTION 1 OF 3
+          </span>
+        </div>
 
-      <!-- Question -->
-      <h2 class="text-4xl sm:text-5xl font-black tracking-tight mb-8">
-        Han is not black?
-      </h2>
+        <!-- Dynamic Question Title -->
+        <h2 id="quiz-question" class="text-3xl sm:text-5xl font-black tracking-tight mb-8">
+          Is han black?
+        </h2>
 
-      <!-- Yes / No Buttons -->
-      <div class="grid grid-cols-2 gap-4">
-        <button id="btn-yes" onclick="handleAnswer('yes', event)" class="py-4 px-6 rounded-2xl text-lg font-bold border-2 border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/70 hover:border-rose-500 hover:bg-rose-500/10 text-zinc-900 dark:text-zinc-100 transition-all active:scale-95 cursor-pointer">
-          Yes
-        </button>
+        <!-- Dynamic Answer Buttons Container -->
+        <div id="quiz-options" class="grid grid-cols-2 gap-4">
+          <!-- Populated by JS -->
+        </div>
 
-        <button id="btn-no" onclick="handleAnswer('no', event)" class="py-4 px-6 rounded-2xl text-lg font-bold border-2 border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/70 hover:border-emerald-500 hover:bg-emerald-500/10 text-zinc-900 dark:text-zinc-100 transition-all active:scale-95 cursor-pointer">
-          No
-        </button>
+        <!-- Feedback Display Area -->
+        <div id="quiz-feedback" class="hidden mt-8 pt-6 border-t border-zinc-200 dark:border-zinc-800 flex-col items-center">
+          <div id="feedback-emoji" class="text-6xl mb-3"></div>
+          <h3 id="feedback-title" class="text-2xl font-black tracking-tight mb-1"></h3>
+          <p id="feedback-sub" class="text-sm text-zinc-500 dark:text-zinc-400 mb-5"></p>
+          
+          <button id="next-btn" onclick="nextQuestion()" class="px-6 py-3 rounded-xl text-sm font-bold bg-zinc-900 text-white dark:bg-white dark:text-zinc-950 hover:opacity-90 transition-all active:scale-95 cursor-pointer">
+            Next Question →
+          </button>
+        </div>
       </div>
 
-      <!-- Feedback Display Area -->
-      <div id="quiz-feedback" class="hidden mt-8 pt-6 border-t border-zinc-200 dark:border-zinc-800 flex-col items-center">
-        <div id="feedback-emoji" class="text-6xl mb-3"></div>
-        <h3 id="feedback-title" class="text-2xl font-black tracking-tight mb-1"></h3>
-        <p id="feedback-sub" class="text-sm text-zinc-500 dark:text-zinc-400 mb-5"></p>
-        
-        <button onclick="resetQuiz()" class="text-xs font-semibold uppercase tracking-wider px-4 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer">
-          Try Again
-        </button>
+      <!-- Quiz Completed Summary Container -->
+      <div id="quiz-complete-content" class="hidden flex-col items-center py-4">
+        <div class="text-7xl mb-4 animate-pop">🏆</div>
+        <span class="inline-block px-3.5 py-1 rounded-full text-[11px] font-bold tracking-widest uppercase bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-3">
+          QUIZ COMPLETED
+        </span>
+        <h2 class="text-3xl sm:text-4xl font-black tracking-tight mb-2">
+          All Done!
+        </h2>
+        <p class="text-base text-zinc-500 dark:text-zinc-400 mb-7">
+          You answered all 3 questions correctly. Han is officially verified!
+        </p>
+
+        <div class="flex flex-wrap items-center justify-center gap-3">
+          <button onclick="resetQuiz()" class="px-6 py-3 rounded-xl text-sm font-bold bg-zinc-900 text-white dark:bg-white dark:text-zinc-950 hover:opacity-90 transition-all active:scale-95 cursor-pointer">
+            Play Again
+          </button>
+          <button onclick="toggleView(false)" class="px-6 py-3 rounded-xl text-sm font-semibold border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all active:scale-95 cursor-pointer">
+            Back to Home
+          </button>
+        </div>
       </div>
 
     </div>
@@ -267,8 +289,34 @@
       }
     ];
 
+    const quizQuestions = [
+      {
+        question: 'Is han black?',
+        options: [
+          { label: 'Yes', isCorrect: true },
+          { label: 'No', isCorrect: false }
+        ]
+      },
+      {
+        question: 'Han is white',
+        options: [
+          { label: 'Yes', isCorrect: false },
+          { label: 'No', isCorrect: true }
+        ]
+      },
+      {
+        question: 'How black is han?',
+        options: [
+          { label: 'Black', isCorrect: false },
+          { label: 'Very black', isCorrect: false },
+          { label: 'Very super black', isCorrect: true }
+        ]
+      }
+    ];
+
     let currentStyleIndex = 0;
     let isQuizMode = false;
+    let currentQuestionIndex = 0;
 
     function cycleEffect() {
       const mainText = document.getElementById('main-text');
@@ -306,7 +354,7 @@
         headerLabel.textContent = 'QUIZ MODE';
         navQuizText.textContent = 'Back';
         navQuizIcon.textContent = '←';
-        footerHint.textContent = 'Choose the correct answer to complete the quiz';
+        footerHint.textContent = 'Select the right answer to advance to the next question';
         statusDot.classList.remove('bg-zinc-500');
         statusDot.classList.add('bg-indigo-500');
         resetQuiz();
@@ -321,6 +369,39 @@
         statusDot.classList.remove('bg-indigo-500');
         statusDot.classList.add('bg-zinc-500');
       }
+    }
+
+    function renderQuestion() {
+      const qData = quizQuestions[currentQuestionIndex];
+      const quizCard = document.getElementById('quiz-card');
+      const progressEl = document.getElementById('quiz-progress');
+      const questionEl = document.getElementById('quiz-question');
+      const optionsEl = document.getElementById('quiz-options');
+      const feedbackBox = document.getElementById('quiz-feedback');
+
+      quizCard.classList.remove('animate-shake', 'border-rose-500', 'border-emerald-500', 'shadow-rose-500/20', 'shadow-emerald-500/20');
+      feedbackBox.classList.add('hidden');
+      feedbackBox.classList.remove('flex');
+
+      progressEl.textContent = `QUESTION ${currentQuestionIndex + 1} OF ${quizQuestions.length}`;
+      questionEl.textContent = qData.question;
+
+      // Switch grid layout based on number of options
+      if (qData.options.length === 2) {
+        optionsEl.className = 'grid grid-cols-2 gap-4';
+      } else {
+        optionsEl.className = 'grid grid-cols-1 gap-3';
+      }
+
+      optionsEl.innerHTML = '';
+      qData.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.id = `option-btn-${idx}`;
+        btn.textContent = opt.label;
+        btn.className = 'quiz-opt-btn py-4 px-6 rounded-2xl text-lg font-bold border-2 border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/70 hover:border-indigo-500 hover:bg-indigo-500/10 text-zinc-900 dark:text-zinc-100 transition-all active:scale-95 cursor-pointer';
+        btn.onclick = (e) => handleAnswer(opt.isCorrect, idx, e);
+        optionsEl.appendChild(btn);
+      });
     }
 
     function spawnParticles(emojis, originX, originY) {
@@ -356,24 +437,25 @@
       }, 280);
     }
 
-    function handleAnswer(choice, event) {
+    function handleAnswer(isCorrect, selectedIdx, event) {
       const quizCard = document.getElementById('quiz-card');
       const feedbackBox = document.getElementById('quiz-feedback');
       const feedbackEmoji = document.getElementById('feedback-emoji');
       const feedbackTitle = document.getElementById('feedback-title');
       const feedbackSub = document.getElementById('feedback-sub');
-      const btnYes = document.getElementById('btn-yes');
-      const btnNo = document.getElementById('btn-no');
+      const nextBtn = document.getElementById('next-btn');
 
-      // Reset animations
+      // Reset card animations & borders
       quizCard.classList.remove('animate-shake', 'border-rose-500', 'border-emerald-500', 'shadow-rose-500/20', 'shadow-emerald-500/20');
       feedbackEmoji.classList.remove('animate-pop');
       void quizCard.offsetWidth; // Force reflow
 
-      // Reset button styles
-      btnYes.className = 'py-4 px-6 rounded-2xl text-lg font-bold border-2 border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/70 text-zinc-900 dark:text-zinc-100 transition-all cursor-pointer';
-      btnNo.className = 'py-4 px-6 rounded-2xl text-lg font-bold border-2 border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/70 text-zinc-900 dark:text-zinc-100 transition-all cursor-pointer';
+      // Reset all option buttons
+      document.querySelectorAll('.quiz-opt-btn').forEach(btn => {
+        btn.className = 'quiz-opt-btn py-4 px-6 rounded-2xl text-lg font-bold border-2 border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/70 hover:border-indigo-500 hover:bg-indigo-500/10 text-zinc-900 dark:text-zinc-100 transition-all active:scale-95 cursor-pointer';
+      });
 
+      const selectedBtn = document.getElementById(`option-btn-${selectedIdx}`);
       const rect = event.currentTarget.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
@@ -382,41 +464,66 @@
       feedbackBox.classList.add('flex');
       feedbackEmoji.classList.add('animate-pop');
 
-      if (choice === 'yes') {
+      if (!isCorrect) {
         // WRONG ANSWER EFFECT
         quizCard.classList.add('animate-shake', 'border-rose-500', 'shadow-rose-500/20');
-        btnYes.classList.add('!border-rose-500', '!bg-rose-500', '!text-white');
+        selectedBtn.classList.add('!border-rose-500', '!bg-rose-500', '!text-white');
         feedbackEmoji.textContent = '❌';
         feedbackTitle.textContent = 'Wrong Answer!';
         feedbackTitle.className = 'text-2xl font-black tracking-tight mb-1 text-rose-500';
-        feedbackSub.textContent = 'Incorrect! Try picking the other option.';
+        feedbackSub.textContent = 'Incorrect! Try picking another option.';
+        nextBtn.classList.add('hidden');
         triggerScreenFlash('bg-rose-500/20');
         spawnParticles(['❌', '🚫', '💥', '🙅‍♂️'], centerX, centerY);
       } else {
         // CORRECT ANSWER EFFECT
         quizCard.classList.add('border-emerald-500', 'shadow-emerald-500/20');
-        btnNo.classList.add('!border-emerald-500', '!bg-emerald-500', '!text-white');
+        selectedBtn.classList.add('!border-emerald-500', '!bg-emerald-500', '!text-white');
         feedbackEmoji.textContent = '✅';
         feedbackTitle.textContent = 'Correct!';
         feedbackTitle.className = 'text-2xl font-black tracking-tight mb-1 text-emerald-500';
         feedbackSub.textContent = 'Spot on! You got the right answer.';
+        
+        nextBtn.classList.remove('hidden');
+        if (currentQuestionIndex < quizQuestions.length - 1) {
+          nextBtn.textContent = 'Next Question →';
+        } else {
+          nextBtn.textContent = 'Finish Quiz 🎉';
+        }
+
         triggerScreenFlash('bg-emerald-500/20');
         spawnParticles(['✅', '🎉', '✨', '🏆', '👏'], centerX, centerY);
       }
     }
 
+    function nextQuestion() {
+      if (currentQuestionIndex < quizQuestions.length - 1) {
+        currentQuestionIndex++;
+        renderQuestion();
+      } else {
+        const activeContent = document.getElementById('quiz-active-content');
+        const completeContent = document.getElementById('quiz-complete-content');
+        const quizCard = document.getElementById('quiz-card');
+
+        quizCard.classList.remove('border-emerald-500', 'shadow-emerald-500/20');
+        activeContent.classList.add('hidden');
+        completeContent.classList.remove('hidden');
+        completeContent.classList.add('flex');
+
+        spawnParticles(['🏆', '🎉', '✨', '🔥', '👑'], window.innerWidth / 2, window.innerHeight / 2);
+      }
+    }
+
     function resetQuiz() {
-      const quizCard = document.getElementById('quiz-card');
-      const feedbackBox = document.getElementById('quiz-feedback');
-      const btnYes = document.getElementById('btn-yes');
-      const btnNo = document.getElementById('btn-no');
+      currentQuestionIndex = 0;
+      const activeContent = document.getElementById('quiz-active-content');
+      const completeContent = document.getElementById('quiz-complete-content');
 
-      quizCard.classList.remove('animate-shake', 'border-rose-500', 'border-emerald-500', 'shadow-rose-500/20', 'shadow-emerald-500/20');
-      feedbackBox.classList.add('hidden');
-      feedbackBox.classList.remove('flex');
+      completeContent.classList.add('hidden');
+      completeContent.classList.remove('flex');
+      activeContent.classList.remove('hidden');
 
-      btnYes.className = 'py-4 px-6 rounded-2xl text-lg font-bold border-2 border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/70 hover:border-rose-500 hover:bg-rose-500/10 text-zinc-900 dark:text-zinc-100 transition-all active:scale-95 cursor-pointer';
-      btnNo.className = 'py-4 px-6 rounded-2xl text-lg font-bold border-2 border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/70 hover:border-emerald-500 hover:bg-emerald-500/10 text-zinc-900 dark:text-zinc-100 transition-all active:scale-95 cursor-pointer';
+      renderQuestion();
     }
 
     function toggleTheme() {
